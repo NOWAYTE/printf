@@ -8,14 +8,19 @@
  * Return: the number of characters written
  */
 
-int _putstr(const char *str)
+int _writestr(const char *str)
 {
-	int len = _strlen(str);
-	int i;
 
-	for (i = 0; i < len; i++)
+	int l = _strlen(str);
+
+	int j;
+
+	for (j = 0; j < l; j++)
 	{
-		_putchar(str[i]);
+
+		_putchar(str[j]);
+
 	}
-	return (len);
+
+	return (l);
 }

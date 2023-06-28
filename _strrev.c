@@ -8,15 +8,21 @@
 
 void _strrev(char *str)
 {
-	int i = 0, j = _strlen(str) - 1;
-	char temp;
+	int x = 0;
+	int y = _strlen(str) - 1;
+	char t;
 
-	while (i < j)
+	while (x < y)
 	{
-		temp = str[i];
-		str[i] = str[j];
-		str[j] = temp;
-		i++;
-		j--;
+		t = str[x];
+
+		str[x] = str[y];
+
+
+		str[y] = t;
+
+		x++;
+
+		y--;
 	}
 }

@@ -1,5 +1,4 @@
 #include "main.h"
-
 /**
  * _putint - writes an integer to the standard output
  *
@@ -8,21 +7,24 @@
  * Return: the number of characters written
  */
 
-int _putint(int n)
+int _writeint(int n)
 {
-	int count = 0;
+
+	int i = 0;
 
 	if (n < 0)
 	{
+
 		_putchar('-');
-		count++;
+		i++;
 		n = -n;
 	}
 	if (n / 10)
 	{
-		count += _putint(n / 10);
+		i += _writeint(n / 10);
 	}
+
 	_putchar('0' + n % 10);
-	count++;
-	return (count);
+
+	return (i);
 }

@@ -9,11 +9,17 @@
  */
 int _strlen(const char *str)
 {
-	int len = 0;
 
-	while (str[len] != '\0')
+
+	int l = 0;
+
+	while (str[l] != '\0')
 	{
-		len++;
+
+
+		l++;
 	}
-	return (len);
+
+
+	return (l);
 }
