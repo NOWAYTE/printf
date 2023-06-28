@@ -1,10 +1,12 @@
+#include "main.h"
+#include<stdarg.h>
 #include <stdio.h>
 #include <string.h>
 
 #define BUFFER_SIZE 1024
 
 int _printf(const char *format, ...) {
-  int i, written;
+  int i, written, j;
   char buffer[BUFFER_SIZE];
   va_list args;
 
@@ -63,7 +65,7 @@ int _printf(const char *format, ...) {
         case 'S': {
           char *s = va_arg(args, char *);
           int len = strlen(s);
-          for (int j = 0; j < len; j++) {
+          for (j = 0; j < len; j++) {
             if (s[j] < 32 || s[j] >= 127) {
               buffer[written++] = '\\';
               buffer[written++] = 'x';
