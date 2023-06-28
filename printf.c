@@ -1,97 +1,90 @@
 #include "main.h"
-#include<stdarg.h>
-#include <stdio.h>
-#include <string.h>
+#include <stdarg.h>
 
-#define BUFFER_SIZE 1024
+/**
+ * _printf - produces output according to a format
+ *
+ * @format: is a character string
+ *
+ * Return: the number of characters printed
+ */
 
-int _printf(const char *format, ...) {
-  int i, written, j;
-  char buffer[BUFFER_SIZE];
-  va_list args;
+int _printf(const char *format, ...)
+{
+	va_list args;
+	int printed_chars = 0;
 
-  va_start(args, format);
+	va_start(args, format);
 
-  for (i = 0; format[i]; i++) {
-    if (format[i] == '%') {
-      i++;
+	while (*format)
+	{
+		if (*format != '%')
+		{
+			_putchar(*format);
+			printed_chars++;
+		}
+		else
+		{
+			format++;
+			switch (*format) {
+			case 'c': {
+				char c = (char) va_arg(args, int);
+				_putchar(c);
+				printed_chars++;
+				break;
+			}
+			case 's': {
+				char *str = va_arg(args, char *);
+				printed_chars += _putstr(str);
+				break;
+			}
+			case 'd':
+			case 'i': {
+				int n = va_arg(args, int);
+				printed_chars += _putint(n);
+				break;
+			}
+			case 'x': {
+				unsigned int x = va_arg(args, unsigned int);
+				char hex_digits[] = "0123456789abcdef";
+				char hex[9] = {'\0'};
+				int i = 0;
+				while (x) {
+					hex[i++] = hex_digits[x % 16];
+					x /= 16;
+				}
+				_putstr("0x");
+				_putstr(hex);
+				printed_chars += 10;  /* including "0x" */
+				break;
+			}
+			case 'p': {
+				void *ptr = va_arg(args, void *);
+				unsigned long int address = (unsigned long int) ptr;
+				char hex_digits[] = "0123456789abcdef";
+				char hex[17] = {'\0'};
+				int i = 0;
+				while (address) {
+					hex[i++] = hex_digits[address % 16];
+					address /= 16;
+				}
+				_putstr("0x");
+				_putstr(hex);
+				printed_chars += 18;  /* including "0x" */
+				break;
+			}
+			default:
+				_putchar('%');
+				_putchar(*format);
+				printed_chars += 2;
+				break;
+			}
+		}
 
-      switch (format[i]) {
-        case 'c': {
-          char c = va_arg(args, int);
-          written = snprintf(buffer, BUFFER_SIZE, "%c", c);
-          break;
-        }
-        case 's': {
-          char *s = va_arg(args, char *);
-          written = snprintf(buffer, BUFFER_SIZE, "%s", s);
-          break;
-        }
-        case '%': {
-          written = snprintf(buffer, BUFFER_SIZE, "%%");
-          break;
-        }
-        case 'b': {
-          unsigned int n = va_arg(args, unsigned int);
-          written = snprintf(buffer, BUFFER_SIZE, "%u", n);
-          break;
-        }
-        case 'd':
-        case 'i': {
-          int n = va_arg(args, int);
-          written = snprintf(buffer, BUFFER_SIZE, "%d", n);
-          break;
-        }
-        case 'u': {
-          unsigned int n = va_arg(args, unsigned int);
-          written = snprintf(buffer, BUFFER_SIZE, "%u", n);
-          break;
-        }
-        case 'o': {
-          unsigned int n = va_arg(args, unsigned int);
-          written = snprintf(buffer, BUFFER_SIZE, "%o", n);
-          break;
-        }
-        case 'x': {
-          unsigned int n = va_arg(args, unsigned int);
-          written = snprintf(buffer, BUFFER_SIZE, "%x", n);
-          break;
-        }
-        case 'X': {
-          unsigned int n = va_arg(args, unsigned int);
-          written = snprintf(buffer, BUFFER_SIZE, "%X", n);
-          break;
-        }
-        case 'S': {
-          char *s = va_arg(args, char *);
-          int len = strlen(s);
-          for (j = 0; j < len; j++) {
-            if (s[j] < 32 || s[j] >= 127) {
-              buffer[written++] = '\\';
-              buffer[written++] = 'x';
-              buffer[written++] = (s[j] >> 4) & 0xf;
-              buffer[written++] = s[j] & 0xf;
-            } else {
-              buffer[written++] = s[j];
-            }
-          }
-          break;
-        }
-        default: {
-          written = 1;
-          break;
-        }
-      }
+		format++;
+	}
 
-      printf(buffer);
-    } else {
-      printf("%c", format[i]);
-      written = 1;
-    }
-  }
-
-  va_end(args);
-
-  return written;
+	va_end(args);
+	return (printed_chars);
 }
 
