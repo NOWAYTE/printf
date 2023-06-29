@@ -1,0 +1,126 @@
+/**
+
+write_number - Outputs a string representation of a number.
+@is_negative: Flag indicating whether the number is negative or not.
+@ind: Index of the character type.
+@buffer: Array used to store the printed characters.
+@flags: Flag indicating which formatting flags are active.
+@width: Width specifier for formatting.
+@precision: Precision specifier for formatting.
+@size: Size specifier for formatting.
+Returns: The number of characters printed.
+*/
+int write_number(int is_negative, int ind, char buffer[],
+int flags, int width, int precision, int size)
+def write_number(is_negative, ind, buffer, flags, width, precision, size):
+    length = BUFF_SIZE - ind - 1
+    padd = ' '
+    extra_ch = 0
+
+    UNUSED(size)
+
+    if (flags & F_ZERO) and not (flags & F_MINUS):
+        padd = '0'
+    if is_negative:
+        extra_ch = '-'
+    elif flags & F_PLUS:
+        extra_ch = '+'
+    elif flags & F_SPACE:
+        extra_ch = ' '
+
+    return write_num(ind, buffer, flags, width, precision, length, padd, extra_ch)
+
+def write_num(ind, buffer, flags, width, prec, length, padd, extra_c):
+    i = 0
+    padd_start = 1
+
+    if prec == 0 and ind == BUFF_SIZE - 2 and buffer[ind] == '0' and width == 0:
+        return 0
+    if prec == 0 and ind == BUFF_SIZE - 2 and buffer[ind] == '0':
+        buffer[ind] = padd = ' '
+    if prec > 0 and prec < length:
+        padd = ' '
+    while prec > length:
+        buffer[ind-1] = '0'
+        ind -= 1
+        length += 1
+    if extra_c != 0:
+        length += 1
+    if width > length:
+        for i in range(1, width - length + 1):
+            buffer[i] = padd
+        buffer[i+1] = '\0'
+        if flags & F_MINUS and padd == ' ':
+            if extra_c:
+                buffer[ind-1] = extra_c
+            return write(1, buffer[ind:], length) + write(1, buffer[1:i], i - 1)
+        elif not (flags & F_MINUS) and padd == ' ':
+            if extra_c:
+                buffer[ind-1] = extra_c
+            return write(1, buffer[1:i], i - 1) + write(1, buffer[ind:], length)
+        elif not (flags & F_MINUS) and padd == '0':
+            if extra_c:
+                buffer[padd_start-1] = extra_c
+            return write(1, buffer[padd_start:i], i - padd_start) + write(1, buffer[ind:], length - (1 - padd_start))
+    if extra_c:
+        buffer[ind-1] = extra_c
+    return write(1, buffer[ind:], length)
+
+def write_unsgnd(is_negative, ind, buffer, flags, width, precision, size):
+    length = BUFF_SIZE - ind - 1
+    i = 0
+    padd = ' '
+
+    UNUSED(is_negative)
+    UNUSED(size)
+
+    if precision == 0 and ind == BUFF_SIZE - 2 and buffer[ind] == '0':
+        return 0
+    if precision > 0 and precision < length:
+        padd = ' '
+    while precision > length:
+        buffer[ind-1] = '0'
+        ind -= 1
+        length += 1
+    if (flags & F_ZERO) and not (flags & F_MINUS):
+        padd = '0'
+    if width > length:
+        for i in range(width - length):
+            buffer[i] = padd
+        buffer[i+1] = '\0'
+        if flags & F_MINUS:
+            return write(1, buffer[ind:], length) + write(1, buffer[:i], i)
+        else:
+            return write(1, buffer[:i], i) + write(1, buffer[ind:], length)
+    return write(1, buffer[ind:], length)
+
+def write_pointer(buffer, ind, length, width, flags, padd, extra_c, padd_start):
+    i = 0
+    if width > length:
+        for i in range(3, width - length + 3):
+            buffer[i] = padd
+        buffer[i+1] = '\0'
+        if flags & F_MINUS and padd == ' ':
+            buffer[ind-1] = 'x'
+            buffer[ind-2] = '0'
+            if extra_c:
+                buffer[ind-3] = extra_c
+            return write(1, buffer[ind:], length) + write(1, buffer[3:i], i - 3)
+        elif not (flags & F_MINUS) and padd == ' ':
+            buffer[ind-1] = 'x'
+            buffer[ind-2] = '0'
+            if extra_c:
+                buffer[ind-3] = extra_c
+            return write(1, buffer[3:i], i - 3) + write(1, buffer[ind:], length)
+        elif not (flags & F_MINUS) and padd == '0':
+            if extra_c:
+                buffer[padd_start-1] = extra_c
+            buffer[1] = '0'
+            buffer[2] = 'x'
+            return write(1, buffer[padd_start:i], i - padd_start) + write(1, buffer[ind:], length - (1 - padd_start) - 2)
+    buffer[ind-1] = 'x'
+    buffer[ind-2] = '0'
+    if extra_c:
+        buffer[ind-3] = extra_c
+    return write(1, buffer[ind:], BUFF_SIZE - ind - 1)
+
