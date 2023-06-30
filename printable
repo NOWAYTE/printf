@@ -1,0 +1,88 @@
+#include "main.h"
+
+/**
+ * isCharPrintable - Evaluates if a character is printable
+ * @c: Character to be evaluated
+ *
+ * Return: 1 if c is printable, 0 otherwise
+ */
+int isCharPrintable(char c)
+{
+	if (c >= 32 && c < 127)
+		return 1;
+
+	return 0;
+}
+
+/**
+ * appendHexCode - Appends ASCII in hexadecimal code to the buffer
+ * @buffer: Array of characters
+ * @index: Index at which to start appending
+ * @asciiCode: ASCII code
+ *
+ * Return: Always 3
+ */
+int appendHexCode(char asciiCode, char buffer[], int index)
+{
+	char hexMapping[] = "0123456789ABCDEF";
+
+	/* The hexadecimal format code is always 2 digits long */
+	if (asciiCode < 0)
+		asciiCode *= -1;
+
+	buffer[index++] = '\\';
+	buffer[index++] = 'x';
+
+	buffer[index++] = hexMapping[asciiCode / 16];
+	buffer[index] = hexMapping[asciiCode % 16];
+
+	return 3;
+}
+
+/**
+ * isCharDigit - Verifies if a character is a digit
+ * @c: Character to be evaluated
+ *
+ * Return: 1 if c is a digit, 0 otherwise
+ */
+int isCharDigit(char c)
+{
+	if (c >= '0' && c <= '9')
+		return 1;
+
+	return 0;
+}
+
+/**
+ * convertNumberSize - Casts a number to the specified size
+ * @num: Number to be casted
+ * @size: Number indicating the type to be casted
+ *
+ * Return: Casted value of num
+ */
+long int convertNumberSize(long int num, int size)
+{
+	if (size == S_LONG)
+		return num;
+	else if (size == S_SHORT)
+		return (short) num;
+
+	return (int) num;
+}
+
+/**
+ * convertUnsignedSize - Casts an unsigned number to the specified size
+ * @num: Number to be casted
+ * @size: Number indicating the type to be casted
+ *
+ * Return: Casted value of num
+ */
+unsigned long int convertUnsignedSize(unsigned long int num, int size)
+{
+	if (size == S_LONG)
+		return num;
+	else if (size == S_SHORT)
+		return (unsigned short) num;
+
+	return (unsigned int) num;
+}
