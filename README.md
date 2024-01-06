@@ -11,5 +11,6 @@ Write a function that produces output according to a format.
  Handle the following conversion specifiers:
 
 2. With a face like mine, I do better in print                                      
-Handle the following custom conversion specifiers:   
+Handle the following custom conversion specifiers:
+
 
